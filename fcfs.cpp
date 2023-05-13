@@ -1,32 +1,41 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
 
 int main() {
-    int n = 5; 
-    int track[n]; 
-    int head, total_head_movement = 0;
+    int n = 3;  
+    int arrival_time[] = {0, 0, 0};  
+    int burst_time[] = {2, 4, 8};  
 
-    printf("Enter the track positions: ");
+    int completion_time[n];  
+    int turnaround_time[n];  
+    int waiting_time[n];  
+     
+    int current_time = 0;
     for (int i = 0; i < n; i++) {
-        scanf("%d", &track[i]);
+        if (current_time < arrival_time[i]) {
+            current_time = arrival_time[i];
+        }
+        completion_time[i] = current_time + burst_time[i];
+        current_time = completion_time[i];
     }
 
-    printf("Enter the head position: ");
-    scanf("%d", &head);
-
-    
-    total_head_movement += abs(head - track[0]);
-    head = track[0];
-
-
-    for (int i = 1; i < n; i++) {
-        total_head_movement += abs(head - track[i]);
-        head = track[i];
+     
+    for (int i = 0; i < n; i++) {
+        turnaround_time[i] = completion_time[i] - arrival_time[i];
+        waiting_time[i] = turnaround_time[i] - burst_time[i];
     }
 
-    printf("Total head movement = %d\n", total_head_movement);
-    printf("Average head movement = %0.2f\n", (float)total_head_movement/n);
+     
+    float avg_turnaround_time = 0;
+    float avg_waiting_time = 0;
+    for (int i = 0; i < n; i++) {
+        avg_turnaround_time += turnaround_time[i];
+        avg_waiting_time += waiting_time[i];
+    }
+    avg_turnaround_time /= n;
+    avg_waiting_time /= n;
+
+    printf("Average turnaround time: %f\n", avg_turnaround_time);
+    printf("Average waiting time: %f\n", avg_waiting_time);
 
     return 0;
 }
